@@ -41,8 +41,6 @@ jobs:
           fi
           echo "All actions are pinned to full-length commit SHAs."
 
-      # Add your project's linters below this line.
-
   test:
     name: Test
     runs-on: ubuntu-latest
@@ -52,7 +50,14 @@ jobs:
         with:
           persist-credentials: false
 
-      # Replace the step below with your project's test command. Pin any setup
-      # action you add to a full commit SHA, like the checkout step above.
-      - name: Run tests
-        run: echo "No tests yet. Replace this step with your project's test command."
+      # This repository is a scratch playground of independent PHP snippets
+      # rather than one program, so "build" means every file parses. The
+      # runner's preinstalled PHP CLI is used directly; no package manifest
+      # exists to install from.
+      - name: Syntax-check every PHP file
+        run: php -l hello.php && php -l bubbleSort.php
+
+      # Neither snippet has an external dependency, so both are exercised
+      # directly and their output is checked. See scripts/smoke-test.sh.
+      - name: Run the smoke test
+        run: bash scripts/smoke-test.sh
